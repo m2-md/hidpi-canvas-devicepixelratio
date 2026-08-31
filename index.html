@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aynı Canvas, İki Ayrı Boyut — devicePixelRatio</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #1c1917;
+        color: #e7e5e4;
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 28px 16px 48px;
+        box-sizing: border-box;
+      }
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .panel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .panel h2 {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+        color: #a8a29e;
+      }
+      .panel.hidpi h2 {
+        color: #a78bfa;
+      }
+      canvas {
+        display: block;
+        border: 1px solid #44403c;
+        border-radius: 4px;
+        background: #fafaf9;
+      }
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      button {
+        background: #292524;
+        color: #e7e5e4;
+        border: 1px solid #57534e;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      button.active {
+        background: #7c3aed;
+        border-color: #7c3aed;
+        color: #fff;
+      }
+      #hud {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #d6d3d1;
+        background: #292524;
+        border: 1px solid #44403c;
+        border-radius: 8px;
+        padding: 12px 18px;
+        min-width: 320px;
+      }
+      #hud b {
+        color: #a78bfa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Aynı Canvas, İki Ayrı Boyut: devicePixelRatio</h1>
+
+    <div class="controls">
+      <span>Simüle edilen dpr:</span>
+      <button data-dpr="1">1×</button>
+      <button data-dpr="2">2×</button>
+      <button data-dpr="3">3×</button>
+    </div>
+
+    <div class="row">
+      <div class="panel naive">
+        <h2>Naif (kur yok → bulanık)</h2>
+        <canvas id="naive"></canvas>
+      </div>
+      <div class="panel hidpi">
+        <h2>HiDPI (setupHiDPICanvas → keskin)</h2>
+        <canvas id="hidpi"></canvas>
+      </div>
+    </div>
+
+    <div id="hud"></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
