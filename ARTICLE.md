@@ -1,4 +1,3 @@
-
 # Retina Ekranda Canvas Neden Puslu Görünür? devicePixelRatio ve İki Ayrı Boyutun Hikâyesi
 
 *CSS pikseli ile cihaz pikseli aynı şey değil. İç çözünürlüğü cihaza, görünen boyutu CSS'e ayırıp jilet gibi keskin bir tuval kuruyoruz — sonra da bu keskinliğin dpr² faturasını dürüstçe ölçüyoruz.*
