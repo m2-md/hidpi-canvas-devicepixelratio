@@ -1,8 +1,8 @@
-// bench.ts — dpr² fill-rate'in hem aritmetik hem ölçülmüş kanıtı.
-// Headless (node) ortamda canvas yok; bu yüzden "boyanan piksel" maliyetini
-// gerçek bir tipli dizi (RGBA byte buffer) üzerine yazarak simüle ediyoruz.
-// clearRect ≈ buffer'ı sıfırla, fillRect ≈ buffer'a renk yaz. Cihaz pikseli
-// sayısı dpr² ile büyüdüğü için ölçülen ms/kare de dpr² eğilimini izler.
+// bench.ts — both arithmetic and empirical proof of dpr² fill-rate.
+// In a headless (node) environment there is no canvas; therefore, we simulate
+// the cost of "rendered pixels" by writing to a real typed array (RGBA byte buffer).
+// clearRect ≈ zero out buffer, fillRect ≈ write color bytes to buffer. Since device
+// pixel count grows with dpr², measured ms/frame also follows the dpr² trend.
 
 import { deviceSize, pixelRatio } from "./scale";
 
@@ -10,11 +10,11 @@ export interface FillRateRow {
   dpr: number;
   devW: number;
   devH: number;
-  perFrame: number; // kare başına boyanan cihaz pikseli
-  perSecond: number; // fps ile çarpılmış
+  perFrame: number; // rendered device pixels per frame
+  perSecond: number; // multiplied by fps
 }
 
-// Saf aritmetik: makaledeki fill-rate tablosunun ta kendisi.
+// Pure arithmetic: matches the fill-rate table described in the article.
 export function fillRateTable(
   cssW: number,
   cssH: number,
@@ -33,13 +33,13 @@ export interface CostRow {
   devW: number;
   devH: number;
   msPerFrame: number;
-  vs1x: number; // dpr=1'e göre ölçülen maliyet oranı
-  expected: number; // pixelRatio(dpr): beklenen dpr² oranı
+  vs1x: number; // measured cost ratio relative to dpr=1
+  expected: number; // pixelRatio(dpr): expected dpr² ratio
 }
 
-// Gerçek ölçüm: cihaz pikseli kadar RGBA byte'ı her karede temizle + doldur.
-// Bir kez allocate edilir (alloc maliyeti ölçüme karışmasın), sonra frames kez
-// clear+fill yapılıp toplam süre kare sayısına bölünür.
+// Empirical measurement: clear + fill RGBA bytes matching device pixel count each frame.
+// Allocated once (so alloc cost doesn't contaminate measurement), then clear+fill is executed
+// for the given frame count and total duration is divided by frame count.
 export function measureFillCost(
   cssW: number,
   cssH: number,
@@ -52,9 +52,9 @@ export function measureFillCost(
 
   const start = performance.now();
   for (let f = 0; f < frames; f++) {
-    // clearRect benzeri: tüm buffer'ı sıfırla
+    // similar to clearRect: reset entire buffer to 0
     buf.fill(0);
-    // fillRect benzeri: tüm buffer'a opak renk yaz (RGBA)
+    // similar to fillRect: write opaque color (RGBA) to entire buffer
     for (let i = 0; i < n; i += 4) {
       buf[i] = 124;
       buf[i + 1] = 58;

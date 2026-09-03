@@ -8,9 +8,9 @@ const naive = document.querySelector<HTMLCanvasElement>("#naive")!;
 const hidpi = document.querySelector<HTMLCanvasElement>("#hidpi")!;
 const hud = document.querySelector<HTMLDivElement>("#hud")!;
 
-// Naif tarafı bulanıklaştırmak için: sahneyi bir kez CSS çözünürlüğünde
-// (dpr=1) offscreen çiz, sonra cihaz çözünürlüğüne büyüterek bas. Tarayıcının
-// naif bir canvas'a retina'da yaptığı upscaling'in birebir simülasyonu.
+// To blur the naive side: draw the scene once at CSS resolution
+// (dpr=1) offscreen, then upscale and paint to device resolution. An exact
+// simulation of what the browser does on retina displays with a naive canvas.
 const offscreen = document.createElement("canvas");
 offscreen.width = CSS_W;
 offscreen.height = CSS_H;
@@ -18,20 +18,20 @@ const offCtx = offscreen.getContext("2d")!;
 
 let activeDpr = 1;
 
-// Aynı vektör sahne: ince çizgiler, küçük metin, bir daire kenarı.
-// Koordinatlar CSS uzayında; keskin 1px çizgilerde alignHalfPixel.
+// Same vector scene: fine lines, small text, a circle contour.
+// Coordinates in CSS space; alignHalfPixel on crisp 1px lines.
 function drawScene(ctx: CanvasRenderingContext2D, label: string): void {
   ctx.clearRect(0, 0, CSS_W, CSS_H);
 
-  // küçük metin (keskinliğin en zorlu testi)
+  // small text (the toughest test of sharpness)
   ctx.fillStyle = "#1c1917";
   ctx.font = "11px system-ui";
   ctx.fillText(label, 14, 22);
   ctx.font = "12px system-ui";
   ctx.fillStyle = "#7c3aed";
-  ctx.fillText("keskin metin: 11px system-ui", 14, 42);
+  ctx.fillText("crisp text: 11px system-ui", 14, 42);
 
-  // ince dikey çizgiler (1px), yarım piksele hizalı
+  // fine vertical lines (1px), aligned to half-pixel
   ctx.strokeStyle = "#7c3aed";
   ctx.lineWidth = 1;
   for (let i = 0; i < 8; i++) {
@@ -42,7 +42,7 @@ function drawScene(ctx: CanvasRenderingContext2D, label: string): void {
     ctx.stroke();
   }
 
-  // ince yatay çizgiler (1px)
+  // fine horizontal lines (1px)
   for (let i = 0; i < 4; i++) {
     const y = alignHalfPixel(60 + i * 12);
     ctx.beginPath();
@@ -51,12 +51,12 @@ function drawScene(ctx: CanvasRenderingContext2D, label: string): void {
     ctx.stroke();
   }
 
-  // daire kenarı
+  // circle contour
   ctx.beginPath();
   ctx.arc(250, 150, 34, 0, Math.PI * 2);
   ctx.stroke();
 
-  // piksel-art grid: smoothing kapalı, keskin köşeler
+  // pixel-art grid: smoothing off, crisp corners
   ctx.imageSmoothingEnabled = false;
   ctx.strokeStyle = "#0ea5e9";
   ctx.strokeRect(alignHalfPixel(20), alignHalfPixel(140), 90, 44);
@@ -70,15 +70,15 @@ function drawScene(ctx: CanvasRenderingContext2D, label: string): void {
 }
 
 function renderHiDPI(): void {
-  // HiDPI: iç çözünürlük cihaz pikseli, çizim CSS uzayında → keskin
+  // HiDPI: internal resolution in device pixels, draw in CSS space → crisp
   const ctx = setupHiDPICanvas(hidpi, CSS_W, CSS_H, activeDpr);
-  drawScene(ctx, "HiDPI: keskin");
+  drawScene(ctx, "HiDPI: crisp");
 }
 
 function renderNaive(): void {
-  // Naif: sahne CSS çözünürlüğünde çizilir, sonra cihaz çözünürlüğüne
-  // büyütülür. dpr arttıkça upscaling bulanıklığı da artar.
-  drawScene(offCtx, "Naif: bulanık");
+  // Naive: scene drawn at CSS resolution, then upscaled to device resolution.
+  // As DPR increases, upscaling blurriness also increases.
+  drawScene(offCtx, "Naive: blurry");
 
   const { w, h } = deviceSize(CSS_W, CSS_H, activeDpr);
   naive.width = w;
@@ -87,7 +87,7 @@ function renderNaive(): void {
   naive.style.height = `${CSS_H}px`;
 
   const ctx = naive.getContext("2d")!;
-  ctx.imageSmoothingEnabled = true; // tarayıcının naif upscaling'i
+  ctx.imageSmoothingEnabled = true; // browser naive upscaling
   ctx.clearRect(0, 0, w, h);
   ctx.drawImage(offscreen, 0, 0, CSS_W, CSS_H, 0, 0, w, h);
 }
@@ -95,11 +95,11 @@ function renderNaive(): void {
 function updateHud(): void {
   const { w, h } = deviceSize(CSS_W, CSS_H, activeDpr);
   hud.innerHTML =
-    `gerçek window.devicePixelRatio: <b>${window.devicePixelRatio}</b><br>` +
-    `simüle edilen dpr: <b>${activeDpr}×</b><br>` +
-    `HiDPI iç çözünürlük: <b>${w}×${h}</b> cihaz pikseli<br>` +
-    `kare başına boyanan piksel: <b>${(w * h).toLocaleString("en-US")}</b><br>` +
-    `piksel çarpanı pixelRatio(${activeDpr}): <b>${pixelRatio(activeDpr)}×</b>`;
+    `actual window.devicePixelRatio: <b>${window.devicePixelRatio}</b><br>` +
+    `simulated dpr: <b>${activeDpr}×</b><br>` +
+    `HiDPI internal resolution: <b>${w}×${h}</b> device pixels<br>` +
+    `rendered pixels per frame: <b>${(w * h).toLocaleString("en-US")}</b><br>` +
+    `pixel multiplier pixelRatio(${activeDpr}): <b>${pixelRatio(activeDpr)}×</b>`;
 }
 
 function renderAll(): void {
@@ -120,15 +120,15 @@ for (const btn of document.querySelectorAll<HTMLButtonElement>(
   });
 }
 
-// Başlangıç: gerçek ekranın dpr'ını yuvarlayıp seç (1/2/3'e sıkıştır).
+// initial: round and select actual screen DPR (clamped to 1/2/3).
 activeDpr = Math.min(3, Math.max(1, Math.round(window.devicePixelRatio || 1)));
 document
   .querySelector<HTMLButtonElement>(`button[data-dpr="${activeDpr}"]`)
   ?.classList.add("active");
 
-// Ekranlar arası taşımada gerçek dpr değişirse konsola bas ve yeniden kur.
+// If actual DPR changes across multi-monitor setups, log to console and re-render.
 watchDprChange((dpr) => {
-  console.log(`dpr ${dpr}: piksel çarpanı ${pixelRatio(dpr)}×`);
+  console.log(`dpr ${dpr}: pixel multiplier ${pixelRatio(dpr)}×`);
   renderAll();
 });
 

@@ -1,12 +1,12 @@
-// scale.ts — saf çeviri matematiği, DOM'a dokunmaz
+// scale.ts — pure conversion math, does not touch the DOM
 
 export interface Size {
   w: number;
   h: number;
 }
 
-// CSS boyutu → cihaz pikseli (canvas.width / canvas.height için)
-// Yuvarlama şart: canvas.width tam sayı olmak zorunda, küsuratı atar.
+// CSS dimension → device pixels (for canvas.width / canvas.height)
+// Rounding is required: canvas.width must be an integer, truncating fractions.
 export function deviceSize(cssW: number, cssH: number, dpr: number): Size {
   return {
     w: Math.round(cssW * dpr),
@@ -14,7 +14,7 @@ export function deviceSize(cssW: number, cssH: number, dpr: number): Size {
   };
 }
 
-// Tek bir uzunluğu iki yön arasında çevir (kur uygula / kuru geri al)
+// Convert a single length between the two spaces (apply / invert ratio)
 export function cssToDevice(px: number, dpr: number): number {
   return px * dpr;
 }
@@ -23,14 +23,14 @@ export function deviceToCss(px: number, dpr: number): number {
   return px / dpr;
 }
 
-// 1px keskin çizgiler için 0.5 hizalama.
-// Tam sayı → +0.5 (ortala); zaten .5 olan değer değişmez.
+// 0.5 alignment for crisp 1px lines.
+// integer → +0.5 (centered); values already at .5 remain unchanged.
 export function alignHalfPixel(x: number): number {
   return Math.floor(x) + 0.5;
 }
 
-// dpr artınca boyanan piksel sayısı karesel artar.
-// dpr=2 → 4× piksel, dpr=3 → 9× piksel.
+// As DPR increases, the number of rendered pixels increases quadratically.
+// dpr=2 → 4× pixels, dpr=3 → 9× pixels.
 export function pixelRatio(dpr: number): number {
   return dpr * dpr;
 }

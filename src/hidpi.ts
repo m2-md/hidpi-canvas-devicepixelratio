@@ -1,4 +1,4 @@
-// hidpi.ts — canvas / DOM'a dokunan taraf
+// hidpi.ts — canvas / DOM manipulation layer
 import { deviceSize } from "./scale";
 
 export function setupHiDPICanvas(
@@ -9,37 +9,37 @@ export function setupHiDPICanvas(
 ): CanvasRenderingContext2D {
   const { w, h } = deviceSize(cssW, cssH, dpr);
 
-  // İç çözünürlük: cihaz pikseli (bitmap gerçekte bu kadar nokta)
+  // Internal resolution: device pixels (the actual bitmap resolution)
   canvas.width = w;
   canvas.height = h;
 
-  // Görünen boyut: CSS pikseli (ekranda bu kadar yer kaplasın)
+  // Display dimensions: CSS pixels (layout size on screen)
   canvas.style.width = `${cssW}px`;
   canvas.style.height = `${cssH}px`;
 
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("2D context alınamadı");
+  if (!ctx) throw new Error("Could not acquire 2D context");
 
-  // Kuru bir kez sabitle: çizim koordinatları CSS uzayında kalsın
-  ctx.setTransform(1, 0, 0, 1, 0, 0); // önce temizle
-  ctx.scale(dpr, dpr); // sonra ölçekle
+  // Fix the transform: drawing coordinates stay in CSS space
+  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset first
+  ctx.scale(dpr, dpr); // then scale
   return ctx;
 }
 
-// dpr değişimini dinler; her değişimde cb'yi yeni dpr ile çağırır.
-// Dönüş: dinlemeyi durduran fonksiyon.
+// Listens for DPR changes; invokes callback with new DPR on each change.
+// Returns: cleanup function to remove listener.
 export function watchDprChange(cb: (dpr: number) => void): () => void {
   let media: MediaQueryList | null = null;
 
   const handler = () => {
     cb(window.devicePixelRatio || 1);
-    listen(); // yeni dpr için taze bir sorgu kur
+    listen(); // register a fresh query for the new DPR
   };
 
   const listen = () => {
     const dpr = window.devicePixelRatio || 1;
-    // Bu sorgu yalnızca dpr === mevcut değerken eşleşir.
-    // dpr saparsa eşleşme kopar → change tetiklenir.
+    // This query matches only while dpr === current value.
+    // If DPR drifts, the match breaks → change is triggered.
     media = window.matchMedia(`(resolution: ${dpr}dppx)`);
     media.addEventListener("change", handler, { once: true });
   };
@@ -48,9 +48,9 @@ export function watchDprChange(cb: (dpr: number) => void): () => void {
   return () => media?.removeEventListener("change", handler);
 }
 
-// Boyut veya dpr değişince tuvali yeniden kurar.
-// Değişiklik yoksa dokunmaz (canvas.width yazmak içeriği siler).
-// Dönüş: gerçekten yeniden kuruldu mu?
+// Reconfigures the canvas when dimensions or DPR change.
+// If unchanged, leaves it untouched (writing canvas.width clears content).
+// Returns: boolean indicating whether resizing actually took place.
 export function resizeToDisplaySize(
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
@@ -61,7 +61,7 @@ export function resizeToDisplaySize(
   const { w, h } = deviceSize(cssW, cssH, dpr);
 
   if (canvas.width === w && canvas.height === h) {
-    return false; // zaten doğru, dokunma
+    return false; // already correct, do not modify
   }
 
   canvas.width = w;
@@ -69,8 +69,8 @@ export function resizeToDisplaySize(
   canvas.style.width = `${cssW}px`;
   canvas.style.height = `${cssH}px`;
 
-  // Transform'u sıfırla ve yeniden ölçekle. setTransform ikisini tek çağrıda yapar:
-  // (dpr, 0, 0, dpr, 0, 0) = identity'yi temizle + scale(dpr, dpr).
+  // Reset transform and rescale. setTransform performs both in a single call:
+  // (dpr, 0, 0, dpr, 0, 0) = clear to identity + scale(dpr, dpr).
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return true;
 }

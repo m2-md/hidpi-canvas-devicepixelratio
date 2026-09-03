@@ -15,9 +15,9 @@ function millions(n: number): string {
 }
 
 console.log(
-  `fill-rate tablosu (${CSS_W}×${CSS_H} CSS, ${FPS} FPS) — saf aritmetik`,
+  `Fill-rate table (${CSS_W}×${CSS_H} CSS, ${FPS} FPS) — pure arithmetic`,
 );
-console.log("  dpr  iç çözünürlük   kare başı piksel   saniyede piksel");
+console.log("  dpr  internal res    pixels/frame       pixels/second");
 for (const r of fillRateTable(CSS_W, CSS_H, FPS, DPRS)) {
   console.log(
     "  " +
@@ -33,9 +33,9 @@ for (const r of fillRateTable(CSS_W, CSS_H, FPS, DPRS)) {
 
 console.log("");
 console.log(
-  `ölçülen maliyet (clear+fill, ${FRAMES} kare) — dpr² eğilimi doğrulaması`,
+  `Measured cost (clear+fill, ${FRAMES} frames) — dpr² trend verification`,
 );
-console.log("  dpr  iç çözünürlük     ms/kare   1x'e oran   beklenen dpr²");
+console.log("  dpr  internal res      ms/frame  ratio to 1x  expected dpr²");
 for (const r of costTrend(CSS_W, CSS_H, FRAMES, DPRS)) {
   console.log(
     "  " +
@@ -45,8 +45,8 @@ for (const r of costTrend(CSS_W, CSS_H, FRAMES, DPRS)) {
       "  " +
       pad(r.msPerFrame.toFixed(3), 9) +
       "  " +
-      pad(r.vs1x.toFixed(2) + "×", 9) +
+      pad(r.vs1x.toFixed(2) + "×", 11) +
       "  " +
-      pad(r.expected.toFixed(0) + "×", 12),
+      pad(r.expected.toFixed(0) + "×", 13),
   );
 }

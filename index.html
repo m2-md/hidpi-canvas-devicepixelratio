@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aynı Canvas, İki Ayrı Boyut — devicePixelRatio</title>
+    <title>Crisp HiDPI Canvas Rendering with devicePixelRatio</title>
     <style>
       body {
         margin: 0;
@@ -87,10 +87,10 @@
     </style>
   </head>
   <body>
-    <h1>Aynı Canvas, İki Ayrı Boyut: devicePixelRatio</h1>
+    <h1>Same Canvas, Two Distinct Dimensions: devicePixelRatio</h1>
 
     <div class="controls">
-      <span>Simüle edilen dpr:</span>
+      <span>Simulated DPR:</span>
       <button data-dpr="1">1×</button>
       <button data-dpr="2">2×</button>
       <button data-dpr="3">3×</button>
@@ -98,11 +98,11 @@
 
     <div class="row">
       <div class="panel naive">
-        <h2>Naif (kur yok → bulanık)</h2>
+        <h2>Naive (no setup → blurry)</h2>
         <canvas id="naive"></canvas>
       </div>
       <div class="panel hidpi">
-        <h2>HiDPI (setupHiDPICanvas → keskin)</h2>
+        <h2>HiDPI (setupHiDPICanvas → crisp)</h2>
         <canvas id="hidpi"></canvas>
       </div>
     </div>
