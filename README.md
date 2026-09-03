@@ -4,6 +4,8 @@
 **▶ [Live demo](https://m2-md.github.io/hidpi-canvas-devicepixelratio/)** · [Source](https://github.com/m2-md/hidpi-canvas-devicepixelratio)
 <!-- LINKS:END -->
 
+> Solving blurry canvas rendering on Retina/HiDPI displays: backing store buffer scaling, CSS pixel alignment, and measuring the quadratic dpr² fill-rate performance tax.
+
 Working code for the article "Same Canvas, Two Different Sizes: Ending the Blur
 with devicePixelRatio". It shows why a canvas goes blurry on a Retina/HiDPI
 display, how to sharpen it by separating the internal resolution (device pixels)
