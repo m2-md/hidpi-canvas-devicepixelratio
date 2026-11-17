@@ -1,10 +1,23 @@
 # Same Canvas, Two Different Sizes — devicePixelRatio
 
-<!-- LINKS:BEGIN — üretildi: scripts/sync-repo-links.py · elle düzenleme -->
-**▶ [Live demo](https://m2-md.github.io/hidpi-canvas-devicepixelratio/)** · [Source](https://github.com/m2-md/hidpi-canvas-devicepixelratio)
-<!-- LINKS:END -->
+[![Live Demo](https://img.shields.io/badge/▶_Live_Demo-Compare_1x_2x_3x-7c3aed?style=for-the-badge)](https://m2-md.github.io/hidpi-canvas-devicepixelratio/)
+[![Read Free on Medium](https://img.shields.io/badge/Read_Deep_Dive-Free_Friend_Link-10b981?style=for-the-badge&logo=medium)](https://javascript.plainenglish.io/why-does-canvas-look-blurry-on-retina-displays-devicepixelratio-and-the-tale-of-two-sizes-2be8f6e6f7f8?source=friends_link&sk=3c3af29a65f3d3238efd567f24c20b00)
+[![Get Starter Kit](https://img.shields.io/badge/Starter_Kit-Buy_Me_a_Coffee-f59e0b?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://www.buymeacoffee.com/mkare/e/599265)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](./tsconfig.json)
+
+![HiDPI Canvas devicePixelRatio Side-by-Side Demo](assets/demo.gif)
 
 > Solving blurry canvas rendering on Retina/HiDPI displays: backing store buffer scaling, CSS pixel alignment, and measuring the quadratic dpr² fill-rate performance tax.
+
+## 2D Canvas & Game Physics Series
+
+| Part | Topic | Live Demo | Free Guide (Friend Link) |
+| :--- | :--- | :--- | :--- |
+| **Part 1** | **2D Rigid-Body Physics & Slingshot** | [▶ Play Demo](https://m2-md.github.io/canvas-physics-from-scratch/) | [📖 Read Free](https://javascript.plainenglish.io/how-game-physics-works-building-a-2d-physics-engine-from-scratch-in-canvas-5cd26416ddb8?source=friends_link&sk=f9c8048fe5b2d513b3c0d26127e97fb4) |
+| **Part 2** | **HiDPI Canvas & `devicePixelRatio`** *(this repo)* | [▶ Live Comparison](https://m2-md.github.io/hidpi-canvas-devicepixelratio/) | [📖 Read Free](https://javascript.plainenglish.io/why-does-canvas-look-blurry-on-retina-displays-devicepixelratio-and-the-tale-of-two-sizes-2be8f6e6f7f8?source=friends_link&sk=3c3af29a65f3d3238efd567f24c20b00) |
+| **Part 3** | **Fixed Timestep & Render Interpolation** | [▶ Live Metronome](https://m2-md.github.io/fixed-timestep-render-interpolation/) | [📖 Read Free](https://javascript.plainenglish.io/metronome-physics-fixed-timestep-game-loops-and-render-interpolation-in-typescript-cdf54ec5ea11?source=friends_link&sk=ff5390a11e2d97b29e82dc41a6572272) |
+
+> 📦 **Want the bundled TypeScript Starter Kit + cheatsheets?** Grab the [TS 2D Canvas Physics & HiDPI Starter Kit](https://www.buymeacoffee.com/mkare/e/599265) (or unlock it free with a [Buy Me a Coffee membership](https://www.buymeacoffee.com/mkare)).
 
 Working code for the article "Same Canvas, Two Different Sizes: Ending the Blur
 with devicePixelRatio". It shows why a canvas goes blurry on a Retina/HiDPI
